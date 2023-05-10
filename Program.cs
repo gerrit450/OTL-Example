@@ -22,10 +22,10 @@ builder.Services.AddOpenTelemetry()
             .AddAspNetCoreInstrumentation()
             .AddConsoleExporter()
             .AddOtlpExporter() // Default http://localhost:4317
-            .AddZipkinExporter(o =>
-            {
-                o.Endpoint = new Uri("http://0.0.0.0:9411/api/v2/spans");
-            })
+            // .AddZipkinExporter(o =>
+            // {
+            //     o.Endpoint = new Uri("http://0.0.0.0:9411/api/v2/spans");
+            // })
             );
             
 

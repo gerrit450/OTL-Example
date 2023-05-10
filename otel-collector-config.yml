@@ -8,13 +8,15 @@ receivers:
 exporters:
   logging:
     loglevel: debug
+  zipkin:
+    endpoint: http://0.0.0.0:9411/api/v2/spans
 processors:
   batch:
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging]
+      exporters: [logging, zipkin]
       processors: [batch]
     #metrics:
       #receivers: [otlp]
