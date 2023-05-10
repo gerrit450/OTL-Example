@@ -1,0 +1,22 @@
+﻿# otel-collector-config.yaml
+receivers:
+  otlp:
+    protocols:
+      http: #0.0.0.0:4317
+      grpc: #0.0.0.0:4137
+      #zipkin: 0.0.0.0:4137
+exporters:
+  logging:
+    loglevel: debug
+processors:
+  batch:
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging]
+      processors: [batch]
+    #metrics:
+      #receivers: [otlp]
+      #exporters: [logging]
+      #processors: [batch]
