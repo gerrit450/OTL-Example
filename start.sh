@@ -16,4 +16,4 @@ dotnet run
 docker run --rm -p 4317:4317 -v ./config.yaml:/etc/otelcol-contrib/config.yaml otel/opentelemetry-collector:latest
 
 #Step 3 In a new window, start the zipkin container to listen to 9411 (This will also a ui on localhost:9411)
-docker run --rm -d -p 9411:9411 --name zipkin openzipkin/zipkin
+docker run --rm -it -p 9411:9411 --name zipkin openzipkin/zipkin 
