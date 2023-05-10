@@ -20,11 +20,12 @@ public class WeatherForecastController : ControllerBase
 
   
     [HttpGet]
-    [Route("/GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    [Route("/GetWeatherForecast/${message}")]
+    public IEnumerable<WeatherForecast> Get(string message)
     {
         using var activity = DiagnosticsConfig.ActivitySource.StartActivity("Getting weatherforecast...");
-        activity?.SetTag("WeatherForecast", "allWeather");
+        activity?.SetTag("Forecast mode", "fast");
+        activity?.SetTag("Query parameter message, ", message ?? "no message!");
 
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
@@ -37,13 +38,30 @@ public class WeatherForecastController : ControllerBase
 
     [HttpGet]
     [Route("/CheckWeather")]
-    public void CheckWeather()
+    public string CheckWeather()
     {
         DiagnosticsConfig.RequestCounter.Add(1,
             new("Action", nameof(Index)),
             new("Controller", nameof(WeatherForecastController)));
 
+        using var activity = DiagnosticsConfig.ActivitySource.StartActivity("Check Weather slow...");
+        activity?.SetTag("Dummy id-", Guid.NewGuid().ToString());
+
         System.Threading.Thread.Sleep(3500);
+
+        return "No weather found";
+    }
+
+    [HttpGet]
+    [Route("/GiveMeError")]
+    public IActionResult GiveMeError()
+    {
+        using var activity = DiagnosticsConfig.ActivitySource.StartActivity("Give me error...");
+        activity?.SetTag("Dummy id-", Guid.NewGuid().ToString());
+
+        System.Threading.Thread.Sleep(3500);
+
+        return BadRequest("Not really bad request!");
     }
 
 }

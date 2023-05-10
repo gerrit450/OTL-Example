@@ -24,7 +24,7 @@ builder.Services.AddOpenTelemetry()
             .AddOtlpExporter() // Default http://localhost:4317
             .AddZipkinExporter(o =>
             {
-                o.Endpoint = new Uri("http://0.0.0.0:9411/api/v2/spans");
+                o.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans");
             })
             );
             
@@ -49,7 +49,7 @@ app.Run();
 public static class DiagnosticsConfig
 {
     // Creating Trace source
-    public const string ServiceName = "myService";
+    public const string ServiceName = "WeatherForecast-API";
     public static ActivitySource ActivitySource = new ActivitySource(ServiceName);
 
     // Creating Metrics source
