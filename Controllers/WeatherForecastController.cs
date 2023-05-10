@@ -37,8 +37,8 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/CheckWeather")]
-    public string CheckWeather()
+    [Route("/TracingAndMetric")]
+    public string TracingAndMetric()
     {
         DiagnosticsConfig.RequestCounter.Add(1,
             new("Action", nameof(Index)),
@@ -47,14 +47,14 @@ public class WeatherForecastController : ControllerBase
         using var activity = DiagnosticsConfig.ActivitySource.StartActivity("Check Weather slow...");
         activity?.SetTag("Dummy id-", Guid.NewGuid().ToString());
 
-        System.Threading.Thread.Sleep(3500);
+        System.Threading.Thread.Sleep(2000);
 
         return "No weather found";
     }
 
     [HttpGet]
-    [Route("/GiveMeError")]
-    public IActionResult GiveMeError()
+    [Route("/TelemetryPlusError")]
+    public IActionResult TelemetryPlusError()
     {
         using var activity = DiagnosticsConfig.ActivitySource.StartActivity("Give me error...");
         activity?.SetTag("Dummy id-", Guid.NewGuid().ToString());
