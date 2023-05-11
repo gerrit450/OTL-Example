@@ -5,8 +5,6 @@ To start off, let us talk about the client. This is where all the information is
 
 For telemetry data to be generated, the OpenTelemetry have to be set up in the **Program.cs**. This is used as the starting point of the program and where we can configure the telemetry system.
 
-<br>
-
 ### Creating the Trace
 
 For us to use a trace, a new one must be created in the Program class as this is the start of our program.
@@ -42,9 +40,9 @@ Code:
 
 <br>
 
-### Adding more trace information
+### Displaying the trace on console
 
-After setting up the trace in Program.cs, you should be able to view it as soon as you send a request.
+After setting up the trace in Program.cs, you should be able to view it as soon as you send a request. Remember how we added the **AddConsoleExporter** in the Program? This will allow us to see it in the console! We also have other exporters that I will cover later on :)
 
 First, let us start up our api:
 
@@ -55,13 +53,34 @@ Now that it is running, let us go to http://localhost:5085/swagger/index.html an
 ![Sending-request](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/API-Get-request.png)
 
 After we send the request, we can now see it on the console:
-![Sending-request](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/console-display.png)
-
-<br>
+![console-display](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/console-display.png)
 
 As you can see, the console displays information all about our trace such as hostname, method used and our message that we entered when we sent the request!
 This information is generated for every request you sent and is the baseline of our trace.
 
 
+### Adding trace via Manual Instrumentation
 
+Now that we have it displayed and working, we can now try and add more information to our traces.
+
+Let us go to our **WeatherForecastController** and modifying one of the requests:
+
+![adding trace activity](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/Manual-Instrumentation.png)
+
+Here I created a GET request that I made it fail on purpose so that we get error messages in our trace. I also added in a **Thread.Sleep** so that we can measure the duration later on when we do the **zipkin**.
+<br>To modify our existing trace, we use the same DiagnosticsConfig class as created in the Program.cs. 
+<br>This allows us to use **activitySource** class which will expose the  **StartActivity** method to start recording the activity of this request.
+
+below that line, I also added in a **tag** which are tags associated with the trace. I added in a GUID so we can easily see the trace :)
+
+
+Now, we can hit this endpoint and see the result:
+
+![Get-bad-request](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/Get-bad-request.png)
+
+
+Now, let us look at our console:
+![Get-bad-request-trace](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/bad-request-trace.png)
+
+As you can see, here we can view the trace with the message including the GUID as well as the 400 request it send back. This shows how manual instrumentation can be used to attach messages to traces. I see this as a great tool to attach messages when exceptions are thrown.
 

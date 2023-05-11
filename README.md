@@ -2,7 +2,6 @@
 
 Hi there, welcome to my OpenTelemetry project! For this demo, I will be showing how openTelemetry works on a local environment. Please note that this is only a starting guide as I am still learning the system! Any new discoveries I make, will be added to this guide :)
 
-<br>
 
 ### Design
 
