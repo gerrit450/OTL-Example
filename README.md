@@ -16,7 +16,7 @@ Next. there is a OpenTelemetry collector which is used to collect and redistribu
 Finally, there is zipkin. This is a *visual* interpretor of trace data and is used to display trace informatio such as request sent, service that it is sent from and so forth. There are many visual interpretors, zipkins is one of many interpretors.
 If you are curious about what other options there is, here is a great link on more exporters: [link](https://opentelemetry.io/docs/instrumentation/net/exporters/)
 
-![Architechture design](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/Architechtural-design.png%20=design.png)
+![Architechture design](https://github.com/gerrit450/OTL-Example/blob/Demo/Images/Architechtural-design.png)
 
 <br>
 
