@@ -18,7 +18,6 @@ public class WeatherForecastController : ControllerBase
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-  
     [HttpGet]
     [Route("/GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
