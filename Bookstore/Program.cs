@@ -12,12 +12,12 @@ builder.Services.AddOpenTelemetry() // add OpenTelemetry
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
        .AddMeter(Telemetry.ServiceName) // add meter to record metrics
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ActivitySource.Name)) // add our service name. In this case, it will be BookstoreApi
+           .AddService(Telemetry.ServiceName)) // add our service name. In this case, it will be BookstoreApi
        .AddConsoleExporter() // export telemetry to console
        )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
-       .AddSource(Telemetry.ActivitySource.Name) // add our activity
+       .AddSource(Telemetry.ServiceName) // add our activity
        .ConfigureResource(resource => resource
            .AddService(Telemetry.ServiceName)) // add our service which is BookstoreApi
        .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data

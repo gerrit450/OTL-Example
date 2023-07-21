@@ -18,12 +18,12 @@ builder.Services.AddOpenTelemetry()
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder
        .AddMeter(Telemetry.ServiceName)
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ActivitySource.Name))
+           .AddService(Telemetry.ServiceName))
        .AddConsoleExporter()
        )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder
-       .AddSource(Telemetry.ActivitySource.Name)
+       .AddSource(Telemetry.ServiceName)
        .ConfigureResource(resource => resource
            .AddService(Telemetry.ServiceName))
        .AddAspNetCoreInstrumentation()
