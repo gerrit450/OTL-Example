@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore", "Bookstore\Bookstore.csproj", "{E5188052-CFA4-43F9-A027-2A54C3A68BEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookService", "BookService\BookService.csproj", "{460096F3-6CE4-4FA1-88AD-7543652A1845}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librarian", "Librarian\Librarian.csproj", "{445723D6-72AA-4FF3-9864-5F36077E7B15}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5188052-CFA4-43F9-A027-2A54C3A68BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5188052-CFA4-43F9-A027-2A54C3A68BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5188052-CFA4-43F9-A027-2A54C3A68BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5188052-CFA4-43F9-A027-2A54C3A68BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{460096F3-6CE4-4FA1-88AD-7543652A1845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{460096F3-6CE4-4FA1-88AD-7543652A1845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{460096F3-6CE4-4FA1-88AD-7543652A1845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{460096F3-6CE4-4FA1-88AD-7543652A1845}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {77447F55-8D3D-465B-89A8-465A15919099}
+	EndGlobalSection
+EndGlobal
