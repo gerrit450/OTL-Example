@@ -26,17 +26,20 @@ namespace Librarian.Controllers
             Book myBook;
             try
             {
-                myBook = listOfBooks.Single(book => book.bookName == name);
+                myBook = listOfBooks.Single(book => book.bookName == name); // look for a book. If not found, an exception will be thrown
             }
             catch (Exception)
             {
-                var exceptionActivity = Telemetry.Telemetry.ActivitySource.StartActivity("Book not found!");
-                exceptionActivity?.AddTag("Time:",DateTime.Now.ToString());
-                exceptionActivity?.AddTag("Status:","Book not found in list");
-                exceptionActivity?.AddTag("Tried looking for book:",name);
-                exceptionActivity?.Stop();
+                using (var exceptionSpan = Telemetry.Telemetry.ActivitySource.StartActivity("Book not found!"))
+                {
+                exceptionSpan?.AddTag("Time:",DateTime.Now.ToString());
+                exceptionSpan?.AddTag("Status","Book not found in list!");
+                exceptionSpan?.AddTag("Tried looking for book", name);
+                }
+
                 throw new BookNotFoundException();
             }
+            
             return myBook;
         }
         [HttpDelete]
@@ -49,13 +52,16 @@ namespace Librarian.Controllers
             }
             catch (Exception)
             {
-                var exceptionActivity = Telemetry.Telemetry.ActivitySource.StartActivity("Book not found!");
-                exceptionActivity?.AddTag("Time:", DateTime.Now.ToString());
-                exceptionActivity?.AddTag("Status:", "Book not found in list");
-                exceptionActivity?.AddTag("Tried looking for book:", name);
-                exceptionActivity?.Stop();
+                using (var exceptionSpan = Telemetry.Telemetry.ActivitySource.StartActivity("Book not found!"))
+                {
+                exceptionSpan?.AddTag("Time:", DateTime.Now.ToString());
+                exceptionSpan?.AddTag("Status:", "Book not found in list!");
+                exceptionSpan?.AddTag("Tried looking for book:", name);
+                }
+
                 throw new BookNotFoundException();
             }
+
             return name + " has been removed from library!";
         }
     }

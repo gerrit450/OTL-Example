@@ -8,33 +8,42 @@ namespace BookService.Controllers
         [Route("GetBook/{name}")]
         public async Task<string> GetBookFromLibrarian(string name)
         {
-            var span = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarion for book: " + name);
+            using (var spanActivity = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarion for book: " + name))
+            {
+                var client = new HttpClient();
+                var responseString = await client.GetStringAsync($"https://localhost:1003/Book/{name}");
+                spanActivity?.AddTag("Getting book", name);
+                
+                return responseString;
+            }
 
-            var client = new HttpClient();
-            var responseString = await client.GetStringAsync($"https://localhost:1003/Book/{name}");
-            span?.Stop();
-
-            return responseString;
         }
         [HttpGet]
         [Route("GetAllBooks")]
         public async Task<string> GetListOfBooksFromLibrarian(string name)
         {
-            var span = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarian for the books...!");
+            using (var span = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarian for the books!"))
+            {
             var client = new HttpClient();
             var responseString = await client.GetStringAsync($"https://localhost:1003/Books");
-            span?.Stop();
-            return responseString;
+            span?.AddTag("response", responseString);
+
+             return responseString;
+            }
         }
 
         [HttpDelete]
         [Route("DeleteBook/{name}")]
         public async Task<string> AskLibrarianToRemoveBook(string name)
         {
-            var client = new HttpClient();
-            var responseString = await client.DeleteAsync($"https://localhost:1003/Book/{name}");
+            using (var span = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarian to remove a book!"))
+            {
+                var client = new HttpClient();
+                var responseString = await client.DeleteAsync($"https://localhost:1003/Book/{name}");
+                span?.AddTag("deleting book",name);
 
-            return responseString.RequestMessage.ToString();
+                return responseString.RequestMessage.ToString();
+            }
         }
     }
 }
