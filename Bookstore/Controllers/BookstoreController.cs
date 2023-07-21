@@ -57,17 +57,5 @@ namespace BookStore.Controller
 
             return responseString.RequestMessage.ToString();
         }
-
-        //[HttpPost]
-        //[Route("Book/name/author")]
-        //public string AddBook(string name, string input)
-        //{
-        //    var bookService = new BookServiceController();
-        //    var book = new Book(name, input);
-        //    return bookService.GiveBookToLibrarian(book);
-        //}
-
-
-
     }
 }
