@@ -123,7 +123,9 @@ spanActivity?.SetTag("Time:", DateTime.Now.ToString()); // add our tags
 
 With this, it allows us to add information to make our span unique and easier to detect.
 
-Finally, now that we have created our span and added our tags, we need to STOP the span recorded so that our activity can be recorded. There are two ways of doing this, either through the use of the `Stop` function as below
+### recording the span
+
+Finally, now that we have created our span and added our tags, we need to STOP the span so that our activity can be recorded. There are two ways of doing this, either through the use of the `Stop` function as below
 
 ``` csharp
 spanActivity?.Stop();
