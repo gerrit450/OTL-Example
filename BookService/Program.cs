@@ -20,25 +20,26 @@ builder.Services.AddSwaggerGen();
 * For more information on OpenTelemetry, please see this guide: https://opentelemetry.io/docs/instrumentation/net/getting-started/
 */
 
-builder.Services.AddOpenTelemetry()
+builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
-       .WithMetrics(metricsProviderBuilder => metricsProviderBuilder
-       .AddMeter(Telemetry.ServiceName)
+       .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
+            .AddMeter(Telemetry.ServiceName) // add meter to record metrics
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ServiceName))
-       .AddConsoleExporter()
+           .AddService(Telemetry.ServiceName)) // add our service name. In this case, it will be BookstoreApi
+           .AddConsoleExporter() // export telemetry to console
        )
 
-       .WithTracing(tracerProviderBuilder => tracerProviderBuilder
-       .AddSource(Telemetry.ServiceName)
+       .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
+            .AddSource(Telemetry.ServiceName) // add our activity
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ServiceName))
-       .AddAspNetCoreInstrumentation()
-       .AddConsoleExporter()
-       .AddZipkinExporter(zipkin =>
-       {
-           zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans");
-       }));
+           .AddService(Telemetry.ServiceName)) // add our service which is BookstoreApi
+           .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
+           .AddConsoleExporter() // export telemetry to console
+           .AddZipkinExporter(zipkin => //add zipkins
+           {
+            zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans"); // Change url
+            })
+        );
 
 var app = builder.Build();
 
