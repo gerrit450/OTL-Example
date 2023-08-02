@@ -7,6 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+/*
+* In here, this is where our Trace and metrics are created. From here, we can configure our telemetry by adding our service
+* as well as configure where to export our telemetry information. 
+* To add spans to our trace, please see the controller example.
+* For more information on OpenTelemetry, please see this guide: https://opentelemetry.io/docs/instrumentation/net/getting-started/
+*/
+
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
