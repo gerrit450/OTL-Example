@@ -27,7 +27,7 @@ To find more about each individual system, I have created a Table of contents fo
 ### Table of Contents:
 <br>
 
-[1. Client-side](https://github.com/gerrit450/OTL-Example/blob/Demo/Docs/ASP.NET-Core.md)
+[1. Client-side](https://github.com/gerrit450/OTL-Example/blob/Demo/Docs/Client.md)
 
 [2. Zipkins](https://github.com/gerrit450/OTL-Example/blob/Demo/Docs/Zipkins.md)
 
