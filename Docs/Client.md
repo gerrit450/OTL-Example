@@ -107,7 +107,30 @@ It will look something like this:
 
 To add spans, we will be using the `ActivitySource` in our telemetry class.
 
-Using this attribute, we can create our span using the following code:
+Using this attribute, we can start recording the activity using the following code: <br>
+``` csharp
+var spanActivity = Telemetry.ActivitySource.StartActivity({span name})
+```
+
+
+From here, we can use the `spanActivity` object to add information to our span.
+For example, we can add a tag to show the time like this:
+
+``` csharp
+var spanActivity = Telemetry.ActivitySource.StartActivity("Getting all the books!"); // start recording our span
+spanActivity?.SetTag("Time:", DateTime.Now.ToString()); // add our tags
+```
+
+With this, it allows us to add information to make our span unique and easier to detect.
+
+Finally, now that we have created our span and added our tags, we need to STOP the span recorded so that our activity can be recorded. There are two ways of doing this, either through the use of the `Stop` function as below
+
+``` csharp
+spanActivity?.Stop();
+```
+or through the use of the `using` syntax.
+
+I would recommend the using syntax as it clearly states the lifetime of the span activity.
 ``` csharp
 using (var spanActivity = Telemetry.ActivitySource.StartActivity("Getting all the books!"))
             {
@@ -117,10 +140,10 @@ using (var spanActivity = Telemetry.ActivitySource.StartActivity("Getting all th
             }
 ```
 
-Note: Very important to ensure that the spanActivity is stopped before the END of the request. Otherwise, the span will NOT be recorded! This is why I apply the `using` syntax to ensure the activity is stopped.
-
 ## Visualising our spans
 
+To visualise our spans, we can utilise many observability tools that are available. I will be using zipkins that are one such tool. See
+[here](https://github.com/gerrit450/OTL-Example/blob/Demo/Docs/Zipkins.md) for more information.
 
 
 
