@@ -89,10 +89,37 @@ What each line does is the following:
 
 ## Using Telemetry
 
-Now that we have the telemtry trace set up, all we need to do is just run the application like normal. 
-It will look something like this:
+Now that we have telemetry trace set up, all we need to do is just run the application like normal. 
+We can do this by going into the Bookstore directory and running `dotnet run`
+
+As soon as you hit an endpoint such as `http://localhost:1001/Books`, tt will show telemetry information such as this:
+
 ![Running-telemetry](https://github.com/gerrit450/OTL-Example/blob/Demo/Docs/Images/DotnetRunTelemetry.png)
 
+## spans
+
+Now that we have our trace setup, we can start by adding our spans. A span is a transaction that takes within a trace. For example, imagine going to the bookstore, our task is to return a book. Our trace will be us returning the book at the bookstore. However, what if we want to know more about what is happening when we return a book? To do this, we will be using a span.
+
+It will look something like this:
+![HowTraceAndSpansLooksLike](https://github.com/gerrit450/OTL-Example/blob/Demo/Docs/Images/HowTraceLooksLike.png)
+
+### Adding our span
+
+To add spans, we will be using the `ActivitySource` in our telemetry class.
+
+Using this attribute, we can create our span using the following code:
+``` csharp
+using (var spanActivity = Telemetry.ActivitySource.StartActivity("Getting all the books!"))
+            {
+                spanActivity?.SetStartTime(DateTime.Now);
+                spanActivity?.SetTag("Books found:", "3");
+                spanActivity?.SetTag("Time:", DateTime.Now.ToString());
+            }
+```
+
+Note: Very important to ensure that the spanActivity is stopped before the END of the request. Otherwise, the span will NOT be recorded! This is why I apply the `using` syntax to ensure the activity is stopped.
+
+## Visualising our spans
 
 
 
