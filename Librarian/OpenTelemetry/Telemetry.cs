@@ -1,7 +1,7 @@
 using System.Diagnostics.Metrics;
 using System.Diagnostics;
 
-namespace Librarian.Telemetry
+namespace Librarian.OpenTelemetry
 {
     public static class Telemetry
     {

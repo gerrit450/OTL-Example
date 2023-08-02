@@ -1,4 +1,4 @@
-using BookStore.Telemetry;
+using BookStore.OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;

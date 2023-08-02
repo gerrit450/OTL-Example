@@ -1,4 +1,4 @@
-using Librarian.Telemetry;
+using Librarian.OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;

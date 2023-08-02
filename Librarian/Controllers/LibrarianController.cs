@@ -1,7 +1,7 @@
 ﻿using Librarian.Exceptions;
 using Librarian.Model;
 using Microsoft.AspNetCore.Mvc;
-using OpenTelemetry;
+using Librarian.OpenTelemetry;
 
 namespace Librarian.Controllers
 {
@@ -30,7 +30,7 @@ namespace Librarian.Controllers
             }
             catch (Exception)
             {
-                using (var exceptionSpan = Telemetry.Telemetry.ActivitySource.StartActivity("Book not found!"))
+                using (var exceptionSpan = Telemetry.ActivitySource.StartActivity("Book not found!"))
                 {
                 exceptionSpan?.AddTag("Time:",DateTime.Now.ToString());
                 exceptionSpan?.AddTag("Status","Book not found in list!");
@@ -52,7 +52,7 @@ namespace Librarian.Controllers
             }
             catch (Exception)
             {
-                using (var exceptionSpan = Telemetry.Telemetry.ActivitySource.StartActivity("Book not found!"))
+                using (var exceptionSpan = Telemetry.ActivitySource.StartActivity("Book not found!"))
                 {
                 exceptionSpan?.AddTag("Time:", DateTime.Now.ToString());
                 exceptionSpan?.AddTag("Status:", "Book not found in list!");

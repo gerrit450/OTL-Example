@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using BookService.OpenTelemetry;
 
 namespace BookService.Controllers
 {
@@ -8,7 +9,7 @@ namespace BookService.Controllers
         [Route("GetBook/{name}")]
         public async Task<string> GetBookFromLibrarian(string name)
         {
-            using (var spanActivity = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarion for book: " + name))
+            using (var spanActivity = Telemetry.ActivitySource.StartActivity("Asking librarion for book: " + name))
             {
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1003/Book/{name}");
@@ -22,7 +23,7 @@ namespace BookService.Controllers
         [Route("GetAllBooks")]
         public async Task<string> GetListOfBooksFromLibrarian(string name)
         {
-            using (var span = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarian for the books!"))
+            using (var span = Telemetry.ActivitySource.StartActivity("Asking librarian for the books!"))
             {
             var client = new HttpClient();
             var responseString = await client.GetStringAsync($"https://localhost:1003/Books");
@@ -36,7 +37,7 @@ namespace BookService.Controllers
         [Route("DeleteBook/{name}")]
         public async Task<string> AskLibrarianToRemoveBook(string name)
         {
-            using (var span = Telemetry.Telemetry.ActivitySource.StartActivity("Asking librarian to remove a book!"))
+            using (var span = Telemetry.ActivitySource.StartActivity("Asking librarian to remove a book!"))
             {
                 var client = new HttpClient();
                 var responseString = await client.DeleteAsync($"https://localhost:1003/Book/{name}");

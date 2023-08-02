@@ -1,4 +1,4 @@
-using BookService.Telemetry;
+using BookService.OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
