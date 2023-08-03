@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore", "Bookstore\Bookstore.csproj", "{E5188052-CFA4-43F9-A027-2A54C3A68BEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookService", "BookService\BookService.csproj", "{460096F3-6CE4-4FA1-88AD-7543652A1845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService", "BookService\BookService.csproj", "{460096F3-6CE4-4FA1-88AD-7543652A1845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librarian", "Librarian\Librarian.csproj", "{445723D6-72AA-4FF3-9864-5F36077E7B15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian", "Librarian\Librarian.csproj", "{445723D6-72AA-4FF3-9864-5F36077E7B15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
