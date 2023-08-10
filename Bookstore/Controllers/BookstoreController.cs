@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using BookStore.OpenTelemetry;
+using Telemetry;
 
 namespace BookStore.Controller
 {
@@ -10,7 +10,7 @@ namespace BookStore.Controller
         [Route("Books")]
         public async Task<string> GetAllBooks()
         {
-            using (var spanActivity = Telemetry.ActivitySource.StartActivity("Getting all the books!"))
+            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Getting all the books!"))
             {
                 spanActivity?.SetStartTime(DateTime.Now);
                 spanActivity?.SetTag("Books found:", "3");
@@ -27,7 +27,7 @@ namespace BookStore.Controller
         [Route("Book/{name}")]
         public async Task<string> GetBook(string name) // get a book!
         {
-            using (var spanActivity = Telemetry.ActivitySource.StartActivity("Getting a book"))
+            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Getting a book"))
             {
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1002/GetBook/{name}");
@@ -42,7 +42,7 @@ namespace BookStore.Controller
         [Route("Book/{name}")]
         public async Task<string> RemoveBook(string name) // remove our book from the library
         {
-           using (var spanActivity = Telemetry.ActivitySource.StartActivity("Removing a book"))
+           using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Removing a book"))
            {
                 var client = new HttpClient();
                 var responseString = await client.DeleteAsync($"https://localhost:1002/DeleteBook/{name}");

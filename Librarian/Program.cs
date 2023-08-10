@@ -1,4 +1,3 @@
-using Librarian.OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -23,16 +22,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
-            .AddMeter(Telemetry.ServiceName) // add meter to record metrics
+            .AddMeter("Librarian") // add meter to record metrics
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ServiceName)) // add our service name. In this case, it will be BookstoreApi
+           .AddService("Librarian")) // add our service name. In this case, it will be Librarian
            .AddConsoleExporter() // export telemetry to console
        )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
-            .AddSource(Telemetry.ServiceName) // add our activity
+            .AddSource("librarian") // add our activity
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ServiceName)) // add our service which is BookstoreApi
+           .AddService("Librarian")) // add our service using our service name
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
            .AddConsoleExporter() // export telemetry to console
            .AddZipkinExporter(zipkin => //add zipkins

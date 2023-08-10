@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService", "BookService\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian", "Librarian\Librarian.csproj", "{445723D6-72AA-4FF3-9864-5F36077E7B15}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{4E5E382C-F580-4FA8-8DC6-38BA86BA2D69}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{EC0DD7BD-1EBB-40DA-9B46-CA31B4E5E43A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telemetry", "Telemetry\Telemetry.csproj", "{A9344F06-B4CB-41E8-B5B8-470CCAF9AEED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +33,18 @@ Global
 		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{445723D6-72AA-4FF3-9864-5F36077E7B15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9344F06-B4CB-41E8-B5B8-470CCAF9AEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9344F06-B4CB-41E8-B5B8-470CCAF9AEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9344F06-B4CB-41E8-B5B8-470CCAF9AEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9344F06-B4CB-41E8-B5B8-470CCAF9AEED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E5188052-CFA4-43F9-A027-2A54C3A68BEB} = {4E5E382C-F580-4FA8-8DC6-38BA86BA2D69}
+		{460096F3-6CE4-4FA1-88AD-7543652A1845} = {EC0DD7BD-1EBB-40DA-9B46-CA31B4E5E43A}
+		{445723D6-72AA-4FF3-9864-5F36077E7B15} = {EC0DD7BD-1EBB-40DA-9B46-CA31B4E5E43A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77447F55-8D3D-465B-89A8-465A15919099}

@@ -1,4 +1,3 @@
-using BookStore.OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -17,22 +16,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
-            .AddMeter(Telemetry.ServiceName) // add meter to record metrics
+            .AddMeter("Bookstore") // add meter to record metrics
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ServiceName)) // add our service name. In this case, it will be BookstoreApi
+           .AddService("Bookstore")) // add our service name. In this case, it will be BookstoreApi
            .AddConsoleExporter() // export telemetry to console
        )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
-           .AddSource(Telemetry.ServiceName) // add our activity
+           .AddSource("Bookstore") // add our activity
        .ConfigureResource(resource => resource
-           .AddService(Telemetry.ServiceName)) // add our service which is BookstoreApi
+           .AddService("Bookstore")) // add our service which is BookstoreApi
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
            .AddConsoleExporter() // export telemetry to console
-           .AddZipkinExporter(zipkin => //add zipkins
-           {
-            zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans"); // Change url
-            })
+           .AddOtlpExporter()
+           //.AddZipkinExporter(zipkin => //add zipkins
+           //{
+           // zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans"); // Change url
+           // })
         );
 
 
