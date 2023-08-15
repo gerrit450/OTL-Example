@@ -14,7 +14,7 @@ namespace Librarian.Controllers
 
         [HttpGet]
         [Route("Books")]
-        public List<Book> GetListOfBooks(string name)
+        public List<Book> GetListOfBooks()
         {
             return listOfBooks;
         }
