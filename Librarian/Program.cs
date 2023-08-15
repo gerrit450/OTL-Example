@@ -34,10 +34,11 @@ builder.Services.AddOpenTelemetry() // add OpenTelemetry
            .AddService("Librarian")) // add our service using our service name
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
            .AddConsoleExporter() // export telemetry to console
-           .AddZipkinExporter(zipkin => //add zipkins
+           .AddOtlpExporter(otlp =>
            {
-            zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans"); // Change url
-            })
+               otlp.Endpoint = new Uri("http://localhost:4317");
+               otlp.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+           })
         );
 
 var app = builder.Build();

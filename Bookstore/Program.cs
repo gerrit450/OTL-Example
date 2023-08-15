@@ -28,7 +28,11 @@ builder.Services.AddOpenTelemetry() // add OpenTelemetry
            .AddService("Bookstore")) // add our service which is BookstoreApi
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
            .AddConsoleExporter() // export telemetry to console
-           .AddOtlpExporter()
+           .AddOtlpExporter(otlp =>
+           {
+               otlp.Endpoint = new Uri("http://localhost:4317");
+               otlp.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+           })
            //.AddZipkinExporter(zipkin => //add zipkins
            //{
            // zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans"); // Change url
