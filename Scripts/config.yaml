@@ -1,15 +1,15 @@
 receivers:
   otlp:
     protocols:
-      grpc: 4317
-      http: 4317
+      grpc: 4200
+      http: 4200
 
 processors:
   batch:
 
 exporters:
   zipkin:
-    endpoint: "https://localhost:9411/api/v2/spans"
+    endpoint: "http://localhost:9411/api/v2/spans"
 
 service:
   pipelines:
