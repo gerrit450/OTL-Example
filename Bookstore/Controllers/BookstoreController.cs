@@ -10,25 +10,25 @@ namespace BookStore.Controller
         [Route("Books")]
         public async Task<string> GetAllBooks()
         {
-            //var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from book service");
-            //using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
-            //{
-                //spanActivity?.SetStartTime(DateTime.Now);
-                //spanActivity?.SetTag("Books found:", "3");
-                //spanActivity?.SetTag("Time:", DateTime.Now.ToString());
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from book service");
+            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            {
+                spanActivity?.SetStartTime(DateTime.Now);
+                spanActivity?.SetTag("Books found:", "3");
+                spanActivity?.SetTag("Time:", DateTime.Now.ToString());
 
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1002/GetAllBooks/");
 
                 return responseString;
-            //}
+            }
         }
 
         [HttpGet]
         [Route("Book/{name}")]
         public async Task<string> GetBook(string name) // get a book!
         {
-            var activity = Telemetry.OpenTelemetry.CreateActivitySource(name);
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting book " + name);
             using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
             {
                 var client = new HttpClient();
@@ -44,7 +44,7 @@ namespace BookStore.Controller
         [Route("Book/{name}")]
         public async Task<string> RemoveBook(string name) // remove our book from the library
         {
-            var activity = Telemetry.OpenTelemetry.CreateActivitySource("test");
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Deleting book " + name);
             using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
             {
                 var client = new HttpClient();
