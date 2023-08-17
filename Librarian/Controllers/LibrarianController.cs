@@ -30,6 +30,13 @@ namespace Librarian.Controllers
         [Route("Book/{name}")]
         public Book GetBook(string name)
         {
+            var GettingBookActivity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
+            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(GettingBookActivity))
+            {
+                span?.SetStartTime(DateTime.Now);
+                span?.AddTag("Event","Getting a book");
+            }
+
             Book myBook;
             try
             {
