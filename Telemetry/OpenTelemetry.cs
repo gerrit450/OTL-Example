@@ -5,12 +5,17 @@ using System.Diagnostics;
 namespace Telemetry
 {
     public static class OpenTelemetry
-    {
-        // Creating our span 
-        public static Activity StartSpanActivity(string nameOfSpan)
+    {    
+        // Creating our activity source
+        public static ActivitySource CreateActivitySource(string nameOfSpan)
         {
-            var activity = new ActivitySource(nameOfSpan);
-            var span = activity.StartActivity();
+            return new ActivitySource(nameOfSpan);
+        }
+
+        // From that source, create our span
+        public static Activity StartSpanActivity(ActivitySource activitySource)
+        {
+            var span = activitySource.StartActivity();
 
             return span;
         }
