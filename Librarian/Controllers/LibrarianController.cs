@@ -37,6 +37,9 @@ namespace Librarian.Controllers
                 span?.AddTag("Event","Getting a book");
             }
 
+            var BookCounter = Telemetry.OpenTelemetry.CreateMetricCounter("Total books that was retrieved");
+            BookCounter.Add(1);
+
             Book myBook;
             try
             {
@@ -66,6 +69,9 @@ namespace Librarian.Controllers
             {
                 span?.SetStartTime(DateTime.Now);
             }
+
+            var BookCounter = Telemetry.OpenTelemetry.CreateMetricCounter("Total books that was removed");
+            BookCounter.Add(1);
             
             try
             {
