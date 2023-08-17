@@ -2,9 +2,16 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Diagnostics;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 /*
 * In here, this is where our Trace and metrics are created. From here, we can configure our telemetry by adding our service
@@ -13,37 +20,43 @@ var builder = WebApplication.CreateBuilder(args);
 * For more information on OpenTelemetry, please see this guide: https://opentelemetry.io/docs/instrumentation/net/getting-started/
 */
 
+string token = File.ReadAllText("../Token.txt");
+
+var ServiceName = builder.Configuration.GetValue<string>("TelemterySettings:Service-name");
+var Namespace = builder.Configuration.GetValue<string>("TelemterySettings:Service-namespace");
+var Environment = builder.Configuration.GetValue<string>("TelemterySettings:Environment");
+
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
-            .AddMeter("Bookstore") // add meter to record metrics
+            .AddMeter(ServiceName) // add meter to record metrics
        .ConfigureResource(resource => resource
-           .AddService("Bookstore")) // add our service name. In this case, it will be BookstoreApi
+           .AddService(ServiceName,Namespace)) // add our service name and namespace. In this case, it will be BookstoreApi
            .AddConsoleExporter() // export telemetry to console
        )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
-           .AddSource("Bookstore") // add our activity
+           .AddSource(ServiceName) // add our activity
        .ConfigureResource(resource => resource
-           .AddService("Bookstore")) // add our service which is BookstoreApi
+           .AddService(ServiceName,Namespace) // add our service which is BookstoreApi
+           .AddAttributes(new KeyValuePair<string, object>[]
+                {
+                    new ("deployment.environment", Environment)
+                }))
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
            .AddConsoleExporter() // export telemetry to console
            .AddOtlpExporter(otlp =>
            {
-               otlp.Endpoint = new Uri("http://localhost:4317");
-               otlp.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+               otlp.Endpoint = new Uri("https://ingest.obs-central.platform.myob.com:4318/v1/traces");
+               otlp.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
+               otlp.HttpClientFactory = () =>
+               {
+                   HttpClient client = new HttpClient();
+                   client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                   return client;
+               };
            })
-           //.AddZipkinExporter(zipkin => //add zipkins
-           //{
-           // zipkin.Endpoint = new Uri("http://127.0.0.1:9411/api/v2/spans"); // Change url
-           // })
         );
-
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
