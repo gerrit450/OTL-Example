@@ -18,11 +18,11 @@ namespace BookService.Controllers
                 
                 return responseString;
             }
-
         }
+
         [HttpGet]
         [Route("GetAllBooks")]
-        public async Task<string> GetListOfBooksFromLibrarian(string name)
+        public async Task<string> GetListOfBooksFromLibrarian()
         {
             var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
             using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
