@@ -1,3 +1,4 @@
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -33,6 +34,17 @@ builder.Services.AddOpenTelemetry() // add OpenTelemetry
        .ConfigureResource(resource => resource
            .AddService(ServiceName, Namespace)) // add our service name and namespace. In this case, it will be Librarian-api
            .AddConsoleExporter() // export telemetry to console
+           .AddOtlpExporter(otlp =>
+           {
+               otlp.Endpoint = new Uri("http://otel-collector.platform-enablement.svc:4318");
+               otlp.Protocol = OtlpExportProtocol.HttpProtobuf;
+               otlp.HttpClientFactory = () =>
+               {
+                   HttpClient client = new HttpClient();
+                   client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                   return client;
+               };
+           })
        )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
