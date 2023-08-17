@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Telemetry;
 
 namespace BookService.Controllers
 {
@@ -9,10 +8,12 @@ namespace BookService.Controllers
         [Route("GetBook/{name}")]
         public async Task<string> GetBookFromLibrarian(string name)
         {
-            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Asking librarion for book: " + name))
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from book service");
+            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
             {
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1003/Book/{name}");
+
                 spanActivity?.AddTag("Getting book", name);
                 
                 return responseString;
@@ -23,13 +24,15 @@ namespace BookService.Controllers
         [Route("GetAllBooks")]
         public async Task<string> GetListOfBooksFromLibrarian(string name)
         {
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity("Asking librarian for the books!"))
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
+            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
             {
-            var client = new HttpClient();
-            var responseString = await client.GetStringAsync($"https://localhost:1003/Books");
-            span?.AddTag("response", responseString);
+                var client = new HttpClient();
+                var responseString = await client.GetStringAsync($"https://localhost:1003/Books");
 
-             return responseString;
+                span?.AddTag("response", responseString);
+
+                return responseString;
             }
         }
 
@@ -37,10 +40,12 @@ namespace BookService.Controllers
         [Route("DeleteBook/{name}")]
         public async Task<string> AskLibrarianToRemoveBook(string name)
         {
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity("Asking librarian to remove a book!"))
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Deleting a book from service");
+            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
             {
                 var client = new HttpClient();
                 var responseString = await client.DeleteAsync($"https://localhost:1003/Book/{name}");
+
                 span?.AddTag("deleting book",name);
 
                 return responseString.RequestMessage.ToString();

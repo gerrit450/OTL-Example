@@ -16,6 +16,13 @@ namespace Librarian.Controllers
         [Route("Books")]
         public List<Book> GetListOfBooks()
         {
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from Library");
+            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            {
+                span?.AddTag("Result","Getting books");
+                span?.SetStartTime(DateTime.Now);
+                span?.SetEndTime(DateTime.Now);
+            }
             return listOfBooks;
         }
 
@@ -30,7 +37,8 @@ namespace Librarian.Controllers
             }
             catch (Exception)
             {
-                using (var exceptionSpan = Telemetry.OpenTelemetry.StartSpanActivity("Book not found!"))
+                var activity = Telemetry.OpenTelemetry.CreateActivitySource("Could not find book!");
+                using (var exceptionSpan = Telemetry.OpenTelemetry.StartSpanActivity(activity))
                 {
                 exceptionSpan?.AddTag("Time:",DateTime.Now.ToString());
                 exceptionSpan?.AddTag("Status","Book not found in list!");
@@ -46,13 +54,20 @@ namespace Librarian.Controllers
         [Route("Book/{name}")]
         public string RemoveBook(string name)
         {
+            var GettingBookActivity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
+            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(GettingBookActivity))
+            {
+                span?.SetStartTime(DateTime.Now);
+            }
+            
             try
             {
                 listOfBooks.Remove(listOfBooks.Single(book => book.bookName == name));
             }
             catch (Exception)
             {
-                using (var exceptionSpan = Telemetry.OpenTelemetry.StartSpanActivity("Book not found!"))
+                var activity = Telemetry.OpenTelemetry.CreateActivitySource("Could not find book!");
+                using (var exceptionSpan = Telemetry.OpenTelemetry.StartSpanActivity(activity))
                 {
                 exceptionSpan?.AddTag("Time:", DateTime.Now.ToString());
                 exceptionSpan?.AddTag("Status:", "Book not found in list!");

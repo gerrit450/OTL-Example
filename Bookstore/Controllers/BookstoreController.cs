@@ -10,24 +10,26 @@ namespace BookStore.Controller
         [Route("Books")]
         public async Task<string> GetAllBooks()
         {
-            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Getting all the books!"))
-            {
-                spanActivity?.SetStartTime(DateTime.Now);
-                spanActivity?.SetTag("Books found:", "3");
-                spanActivity?.SetTag("Time:", DateTime.Now.ToString());
+            //var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from book service");
+            //using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            //{
+                //spanActivity?.SetStartTime(DateTime.Now);
+                //spanActivity?.SetTag("Books found:", "3");
+                //spanActivity?.SetTag("Time:", DateTime.Now.ToString());
 
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1002/GetAllBooks/");
 
                 return responseString;
-            }
+            //}
         }
 
         [HttpGet]
         [Route("Book/{name}")]
         public async Task<string> GetBook(string name) // get a book!
         {
-            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Getting a book"))
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource(name);
+            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
             {
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1002/GetBook/{name}");
@@ -42,8 +44,9 @@ namespace BookStore.Controller
         [Route("Book/{name}")]
         public async Task<string> RemoveBook(string name) // remove our book from the library
         {
-           using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity("Removing a book"))
-           {
+            var activity = Telemetry.OpenTelemetry.CreateActivitySource("test");
+            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            {
                 var client = new HttpClient();
                 var responseString = await client.DeleteAsync($"https://localhost:1002/DeleteBook/{name}");
                 spanActivity?.SetStartTime(DateTime.Now);
