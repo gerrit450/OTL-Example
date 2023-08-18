@@ -1,8 +1,9 @@
+using Bookstore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Diagnostics;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,29 +23,32 @@ builder.Services.AddSwaggerGen();
 
 string token = File.ReadAllText("../Token.txt");
 
-var ServiceName = builder.Configuration.GetValue<string>("TelemterySettings:Service-name");
-var Namespace = builder.Configuration.GetValue<string>("TelemterySettings:Service-namespace");
-var Environment = builder.Configuration.GetValue<string>("TelemterySettings:Environment");
-
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
-       .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
-            .AddMeter(ServiceName) // add meter to record metrics
-       .ConfigureResource(resource => resource
-           .AddService(ServiceName,Namespace)) // add our service name and namespace. In this case, it will be BookstoreApi
-           .AddConsoleExporter() // export telemetry to console
-       )
+       //.WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
+       //     .AddMeter(DiagnosticsConfig.ServiceName) // add meter to record metrics
+       //.ConfigureResource(resource => resource
+       //    .AddService(DiagnosticsConfig.ServiceName, DiagnosticsConfig.RootServicename)) // add our service name and namespace. In this case, it will be BookstoreApi
+       //    .AddConsoleExporter() // export telemetry to console
+       //)
 
-       .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
-           .AddSource(ServiceName) // add our activity
+       .WithTracing(tracerProviderBuilder => tracerProviderBuilder
+           .AddSource(DiagnosticsConfig.ServiceName)
+
+       // The resource producing the telemetry
        .ConfigureResource(resource => resource
-           .AddService(ServiceName,Namespace) // add our service which is BookstoreApi
+            // The service
+           .AddService(DiagnosticsConfig.ServiceName, DiagnosticsConfig.RootServicename)
+
+           // with attribute(s), deployment information
            .AddAttributes(new KeyValuePair<string, object>[]
                 {
-                    new ("deployment.environment", Environment)
+                    new ("deployment.environment", DiagnosticsConfig.DeploymentEnvironment),
+                    new ("deployment.host", DiagnosticsConfig.Host)
                 }))
+
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
-           .AddConsoleExporter() // export telemetry to console
+           
            .AddOtlpExporter(otlp =>
            {
                otlp.Endpoint = new Uri("https://ingest.obs-central.platform.myob.com:4318/v1/traces");
@@ -56,6 +60,8 @@ builder.Services.AddOpenTelemetry() // add OpenTelemetry
                    return client;
                };
            })
+
+           .AddConsoleExporter() // export telemetry to console
         );
 
 var app = builder.Build();

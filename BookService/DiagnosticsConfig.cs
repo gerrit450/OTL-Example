@@ -7,9 +7,9 @@ namespace BookService
      */
     public static class DiagnosticsConfig
     {
-        public const string RootServicename = "Service-name";
-        public const string ServiceName = "bookstore-demo";
+        public const string RootServicename = "otl-example";
+        public const string ServiceName = "bookservice";
         public const string DeploymentEnvironment = "Development";
-        public static readonly ActivitySource ActivitySource = new("bookservice");
+        public static readonly ActivitySource ActivitySource = new(ServiceName);
     }
 }

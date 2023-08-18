@@ -1,9 +1,9 @@
+using Librarian;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,37 +23,33 @@ builder.Services.AddSwaggerGen();
 
 string token = File.ReadAllText("../Token.txt");
 
-var ServiceName = builder.Configuration.GetValue<string>("TelemterySettings:Service-name");
-var Namespace = builder.Configuration.GetValue<string>("TelemterySettings:Service-namespace");
-var Environment = builder.Configuration.GetValue<string>("TelemterySettings:Environment");
-
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
        .WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
-            .AddMeter(ServiceName) // add meter to record metrics
-       .ConfigureResource(resource => resource
-           .AddService(ServiceName, Namespace)) // add our service name and namespace. In this case, it will be Librarian-api
-           .AddConsoleExporter() // export telemetry to console
-           .AddOtlpExporter(otlp =>
-           {
-               otlp.Endpoint = new Uri("http://otel-collector.platform-enablement.svc:4318");
-               otlp.Protocol = OtlpExportProtocol.HttpProtobuf;
-               otlp.HttpClientFactory = () =>
+           .AddMeter(DiagnosticsConfig.LibraryMeter.Name) // add meter to record metrics
+           .ConfigureResource(resource => resource
+               .AddService(DiagnosticsConfig.ServiceName, DiagnosticsConfig.RootServicename)) // add our service name and namespace. In this case, it will be Librarian-api
+               .AddConsoleExporter() // export telemetry to console
+               .AddOtlpExporter(otlp =>
                {
-                   HttpClient client = new HttpClient();
-                   client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                   return client;
-               };
-           })
-       )
+                   otlp.Endpoint = new Uri("http://otel-collector.platform-enablement.svc:4318");
+                   otlp.Protocol = OtlpExportProtocol.HttpProtobuf;
+                   otlp.HttpClientFactory = () =>
+                   {
+                       HttpClient client = new HttpClient();
+                       client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                       return client;
+                   };
+               })
+           )
 
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder // add traces
-           .AddSource(ServiceName) // add our activity
+           .AddSource(DiagnosticsConfig.ServiceName) // add our activity
        .ConfigureResource(resource => resource
-           .AddService(ServiceName, Namespace) // add our service which is Librarian-api
+           .AddService(DiagnosticsConfig.ServiceName, DiagnosticsConfig.RootServicename) // add our service which is Librarian-api
            .AddAttributes(new KeyValuePair<string, object>[]
                 {
-                    new ("deployment.environment", Environment)
+                    new ("deployment.environment", DiagnosticsConfig.DeploymentEnvironment)
                 }))
            .AddAspNetCoreInstrumentation() // allows automatic collection of instrumentation data
            .AddConsoleExporter() // export telemetry to console

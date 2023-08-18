@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace BookService.Controllers
 {
@@ -6,33 +8,34 @@ namespace BookService.Controllers
     {
         [HttpGet]
         [Route("GetBook/{name}")]
-        public async Task<string> GetBookFromLibrarian(string name)
+        public async Task<LibraryBook> GetBookFromLibrarian(string name)
         {
-            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from book service");
-            using (var spanActivity = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Get book by name"))
             {
                 var client = new HttpClient();
                 var responseString = await client.GetStringAsync($"https://localhost:1003/Book/{name}");
+                var libraryBook = JsonSerializer.Deserialize<LibraryBook>(responseString) ?? new LibraryBook();
 
-                spanActivity?.AddTag("Getting book", name);
-                
-                return responseString;
+                span?.AddTag("library-book.name", libraryBook.Name);
+                span?.AddTag("library-book.author", libraryBook.Author);
+
+                return libraryBook;
             }
         }
 
         [HttpGet]
         [Route("GetAllBooks")]
-        public async Task<string> GetListOfBooksFromLibrarian()
+        public async Task<List<LibraryBook>> GetListOfBooksFromLibrarian()
         {
-            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Get all books"))
             {
                 var client = new HttpClient();
-                var responseString = await client.GetStringAsync($"https://localhost:1003/Books");
+                var response = await client.GetStringAsync($"https://localhost:1003/Books");
+                var libraryBooks = JsonSerializer.Deserialize<List<LibraryBook>>(response) ?? new List<LibraryBook>();
 
-                span?.AddTag("response", responseString);
+                span?.AddTag("number of books", libraryBooks.Count);
 
-                return responseString;
+                return libraryBooks;
             }
         }
 
@@ -40,15 +43,12 @@ namespace BookService.Controllers
         [Route("DeleteBook/{name}")]
         public async Task<string> AskLibrarianToRemoveBook(string name)
         {
-            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Deleting a book from service");
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Delete book"))
             {
                 var client = new HttpClient();
-                var responseString = await client.DeleteAsync($"https://localhost:1003/Book/{name}");
+                var response = await client.DeleteAsync($"https://localhost:1003/Book/{name}");
 
-                span?.AddTag("deleting book",name);
-
-                return responseString.RequestMessage.ToString();
+                return response.ToString();
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Librarian.Model
+﻿using System.Text.Json.Serialization;
+
+namespace Librarian.Model
 {
     public class Book
     {
@@ -11,7 +13,11 @@
             bookAuthor = author;
         }
         public int bookId { get; }
+
+        [JsonPropertyName("name")]
         public string bookName { get; }
+
+        [JsonPropertyName("author")]
         public string bookAuthor { get; }
     }
 }

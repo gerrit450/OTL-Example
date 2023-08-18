@@ -1,96 +1,78 @@
 ﻿using Librarian.Exceptions;
 using Librarian.Model;
 using Microsoft.AspNetCore.Mvc;
-using Telemetry;
+using System.Diagnostics.Metrics;
 
 namespace Librarian.Controllers
 {
     public class LibrarianController
     {
-        private static List<Book> listOfBooks = new List<Book>()
-        {
-            new Book("book1","author1"), new Book("book2","author2"), new Book("book3","author3")
-        };
+        private readonly Counter<long> _booksRemovedCounter = DiagnosticsConfig.LibraryMeter.CreateCounter<long>("removed");
+        private readonly Counter<long> _booksRetrievedCounter = DiagnosticsConfig.LibraryMeter.CreateCounter<long>("viewed");
 
         [HttpGet]
         [Route("Books")]
         public List<Book> GetListOfBooks()
         {
-            var activity = Telemetry.OpenTelemetry.CreateActivitySource("Getting books from Library");
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Get library books"))
             {
-                span?.AddTag("Result","Getting books");
-                span?.SetStartTime(DateTime.Now);
-                span?.SetEndTime(DateTime.Now);
+                _booksRetrievedCounter.Add(Books.ListOfBooks.Count);
+                return Books.ListOfBooks;
             }
-            return listOfBooks;
         }
 
         [HttpGet]
         [Route("Book/{name}")]
         public Book GetBook(string name)
         {
-            var GettingBookActivity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(GettingBookActivity))
+            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("view library book"))
             {
-                span?.SetStartTime(DateTime.Now);
-                span?.AddTag("Event","Getting a book");
-            }
-
-            var BookCounter = Telemetry.OpenTelemetry.CreateMetricCounter("Total books that was retrieved");
-            BookCounter.Add(1);
-
-            Book myBook;
-            try
-            {
-                myBook = listOfBooks.Single(book => book.bookName == name); // look for a book. If not found, an exception will be thrown
-            }
-            catch (Exception)
-            {
-                var activity = Telemetry.OpenTelemetry.CreateActivitySource("Could not find book!");
-                using (var exceptionSpan = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+                // look for a book. If not found, an exception will be thrown
+                Book myBook;
+                try
                 {
-                exceptionSpan?.AddTag("Time:",DateTime.Now.ToString());
-                exceptionSpan?.AddTag("Status","Book not found in list!");
-                exceptionSpan?.AddTag("Tried looking for book", name);
+                    myBook = Books.ListOfBooks.Single(book => book.bookName == name);
+                    _booksRetrievedCounter.Add(1);
+                    span?.SetTag("book", myBook.bookName);
+                }
+                catch (Exception)
+                {
+                    span?.SetTag("book", name);
+                    throw new BookNotFoundException();
                 }
 
-                throw new BookNotFoundException();
+                return myBook;
             }
-            
-            return myBook;
         }
+
         [HttpDelete]
         [Route("Book/{name}")]
         public string RemoveBook(string name)
         {
-            var GettingBookActivity = Telemetry.OpenTelemetry.CreateActivitySource("Getting all the books");
-            using (var span = Telemetry.OpenTelemetry.StartSpanActivity(GettingBookActivity))
+            Book bookToDelete;
+            using (var span1 = DiagnosticsConfig.ActivitySource.StartActivity("Deleting book part 1"))
             {
-                span?.SetStartTime(DateTime.Now);
-            }
-
-            var BookCounter = Telemetry.OpenTelemetry.CreateMetricCounter("Total books that was removed");
-            BookCounter.Add(1);
-            
-            try
-            {
-                listOfBooks.Remove(listOfBooks.Single(book => book.bookName == name));
-            }
-            catch (Exception)
-            {
-                var activity = Telemetry.OpenTelemetry.CreateActivitySource("Could not find book!");
-                using (var exceptionSpan = Telemetry.OpenTelemetry.StartSpanActivity(activity))
+                span1?.AddTag("book", name);
+                try
                 {
-                exceptionSpan?.AddTag("Time:", DateTime.Now.ToString());
-                exceptionSpan?.AddTag("Status:", "Book not found in list!");
-                exceptionSpan?.AddTag("Tried looking for book:", name);
+                    bookToDelete = Books.ListOfBooks.Single(book => book.bookName == name);
                 }
-
-                throw new BookNotFoundException();
+                catch (Exception)
+                {
+                    throw new BookNotFoundException();
+                }
             }
 
-            return name + " has been removed from library!";
+            using (var span2 = DiagnosticsConfig.ActivitySource.StartActivity("Deleting book part 2"))
+            {
+                span2?.AddTag("book", name); 
+                
+                Books.ListOfBooks.Remove(bookToDelete);
+                _booksRemovedCounter.Add(1);
+               
+                return name + " has been removed from library!";
+            }
         }
+
     }
 }

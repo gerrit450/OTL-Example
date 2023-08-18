@@ -1,9 +1,17 @@
 ﻿using System.Diagnostics;
+using System.Net;
 
-public static class DiagnosticsConfig
+namespace Bookstore
 {
-    public const string RootServicename = "bookstore-service";
-    public const string ServiceName = "bookstore-demo";
-    public const string DeploymentEnvironment = "Development";
-    public static readonly ActivitySource ActivitySource = new("bookstore-service");
+    /*
+     * This needs to be unique for each service.
+     */
+    public static class DiagnosticsConfig
+    {
+        public static readonly string RootServicename = "otl-example";
+        public static readonly string ServiceName = "bookstore";
+        public static readonly string DeploymentEnvironment = "Development";
+        public static readonly string Host = Dns.GetHostName();
+        public static readonly ActivitySource ActivitySource = new(ServiceName);
+    }
 }
