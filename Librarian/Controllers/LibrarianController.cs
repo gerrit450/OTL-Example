@@ -14,6 +14,7 @@ namespace Librarian.Controllers
         [Route("Books")]
         public List<Book> GetListOfBooks()
         {
+
             using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Get library books"))
             {
                 _booksRetrievedCounter.Add(Books.ListOfBooks.Count);
@@ -33,11 +34,11 @@ namespace Librarian.Controllers
                 {
                     myBook = Books.ListOfBooks.Single(book => book.bookName == name);
                     _booksRetrievedCounter.Add(1);
-                    span?.SetTag("book", myBook.bookName);
+                    span?.AddTag("book", myBook.bookName);
                 }
                 catch (Exception)
                 {
-                    span?.SetTag("book", name);
+                    span?.AddTag("book", name);
                     throw new BookNotFoundException();
                 }
 

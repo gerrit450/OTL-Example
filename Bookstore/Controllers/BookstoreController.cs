@@ -13,8 +13,6 @@ namespace BookStore.Controller
         {
             using (var span = DiagnosticsConfig.ActivitySource.StartActivity("get books from bookservice"))
             {
-                span?.SetTag("Time", DateTime.Now.ToString());
-
                 var client = new HttpClient();
                 var response = await client.GetStringAsync($"https://localhost:1002/GetAllBooks/");
                 var listOfBooks = JsonSerializer.Deserialize<List<BookServiceBook>>(response) ?? new List<BookServiceBook>();
@@ -35,8 +33,8 @@ namespace BookStore.Controller
                 var response = await client.GetStringAsync($"https://localhost:1002/GetBook/{name}");
                 var book = JsonSerializer.Deserialize<BookServiceBook>(response) ?? new BookServiceBook();
 
-                span?.SetTag("bookservice.book.name", book.Name);
-                span?.SetTag("bookservice.book.author", book.Author);
+                span?.AddTag("bookservice.book.name", book.Name);
+                span?.AddTag("bookservice.book.author", book.Author);
 
                 return book;
             }

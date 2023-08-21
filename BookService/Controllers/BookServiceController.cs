@@ -7,6 +7,22 @@ namespace BookService.Controllers
     public class BookServiceController
     {
         [HttpGet]
+        [Route("GetAllBooks")]
+        public async Task<List<LibraryBook>> GetListOfBooksFromLibrarian()
+        {
+            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Get all books"))
+            {
+                var client = new HttpClient();
+                var response = await client.GetStringAsync($"https://localhost:1003/Books");
+                var libraryBooks = JsonSerializer.Deserialize<List<LibraryBook>>(response) ?? new List<LibraryBook>();
+
+                span?.SetTag("number of books", libraryBooks.Count);
+
+                return libraryBooks;
+            }
+        }
+
+        [HttpGet]
         [Route("GetBook/{name}")]
         public async Task<LibraryBook> GetBookFromLibrarian(string name)
         {
@@ -17,25 +33,9 @@ namespace BookService.Controllers
                 var libraryBook = JsonSerializer.Deserialize<LibraryBook>(responseString) ?? new LibraryBook();
 
                 span?.AddTag("library-book.name", libraryBook.Name);
-                span?.AddTag("library-book.author", libraryBook.Author);
+                span?.SetTag("library-book.author", libraryBook.Author);
 
                 return libraryBook;
-            }
-        }
-
-        [HttpGet]
-        [Route("GetAllBooks")]
-        public async Task<List<LibraryBook>> GetListOfBooksFromLibrarian()
-        {
-            using (var span = DiagnosticsConfig.ActivitySource.StartActivity("Get all books"))
-            {
-                var client = new HttpClient();
-                var response = await client.GetStringAsync($"https://localhost:1003/Books");
-                var libraryBooks = JsonSerializer.Deserialize<List<LibraryBook>>(response) ?? new List<LibraryBook>();
-
-                span?.AddTag("number of books", libraryBooks.Count);
-
-                return libraryBooks;
             }
         }
 

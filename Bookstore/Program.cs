@@ -25,13 +25,6 @@ string token = File.ReadAllText("../Token.txt");
 
 builder.Services.AddOpenTelemetry() // add OpenTelemetry
 
-       //.WithMetrics(metricsProviderBuilder => metricsProviderBuilder // add metrics
-       //     .AddMeter(DiagnosticsConfig.ServiceName) // add meter to record metrics
-       //.ConfigureResource(resource => resource
-       //    .AddService(DiagnosticsConfig.ServiceName, DiagnosticsConfig.RootServicename)) // add our service name and namespace. In this case, it will be BookstoreApi
-       //    .AddConsoleExporter() // export telemetry to console
-       //)
-
        .WithTracing(tracerProviderBuilder => tracerProviderBuilder
            .AddSource(DiagnosticsConfig.ServiceName)
 
